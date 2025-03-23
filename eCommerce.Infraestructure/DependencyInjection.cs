@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.Design;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using eCommerce.Core.RepositoryContract;
 using eCommerce.Infraestructure.Repository;

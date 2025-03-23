@@ -1,4 +1,5 @@
-﻿using eCommerce.Core.DTO;                      // Contains Data Transfer Objects (DTOs) used to transfer data between layers
+﻿using AutoMapper;
+using eCommerce.Core.DTO;                      // Contains Data Transfer Objects (DTOs) used to transfer data between layers
 using eCommerce.Core.Entities;                 // Contains entity classes that represent database models
 using eCommerce.Core.RepositoryContract;       // Contains interfaces for data access (repository pattern)
 using eCommerce.Core.ServiceContracts;         // Contains interfaces for service layer contracts
@@ -10,11 +11,12 @@ namespace eCommerce.Core.Services
     {
         // Dependency: IUsersRepository is injected to handle data access related to users.
         private readonly IUsersRepository _usersRepository;
-
+        private readonly IMapper _mapper; // AutoMapper instance for mapping between entities and DTOs.
         // Constructor that takes in an IUsersRepository instance via dependency injection.
-        public UsersService(IUsersRepository usersRepository)
+        public UsersService(IUsersRepository usersRepository, IMapper mapper)
         {
             _usersRepository = usersRepository;
+            _mapper = mapper; // Initialize the AutoMapper instance.
         }
 
         // Asynchronously processes a login request.
@@ -30,27 +32,17 @@ namespace eCommerce.Core.Services
             }
 
             // If user is found, create and return an AuthenticationResponse with user details and a dummy token.
-            return new AuthenticationResponse(
-                applicationUser.UserId,
-                applicationUser.Email,
-                applicationUser.PersonName,
-                applicationUser.Gender,
-                "dummy token", // In a real-world application, you would generate a valid token here.
-                Success: true);
+            //Return a mapped object from ApplicationUser to AuthenticationResponse.
+            return _mapper.Map<AuthenticationResponse>(applicationUser) with { Success = true, Token = "dummy" };
         }
 
         // Asynchronously processes a registration request.
         public async Task<AuthenticationResponse?> Register(RegisterRequest registerRequest)
         {
             // Create a new ApplicationUser entity using the data from the registration request.
-            ApplicationUser applicationUser = new ApplicationUser()
-            {
-                PersonName = registerRequest.PersonName,
-                Email = registerRequest.Email,
-                Password = registerRequest.Password,  // In a real application, passwords should be hashed.
-                Gender = registerRequest.Gender.ToString(),
-            };
-
+           
+            
+            var applicationUser = _mapper.Map<RegisterRequest, ApplicationUser>(registerRequest);
             // Add the new user to the repository (i.e., persist it to the database).
             ApplicationUser? registerUser = await _usersRepository.AddUser(applicationUser);
 
@@ -61,13 +53,8 @@ namespace eCommerce.Core.Services
             }
 
             // Return an AuthenticationResponse for the newly registered user.
-            return new AuthenticationResponse(
-                registerUser.UserId,
-                registerUser.PersonName,
-                registerUser.Email,
-                registerUser.Gender,
-                "Dummy token",  // In a real application, generate a valid token.
-                Success: true);
+            return _mapper.Map<AuthenticationResponse>(applicationUser) with { Success = true, Token = "dummy" };
+
         }
     }
 }
