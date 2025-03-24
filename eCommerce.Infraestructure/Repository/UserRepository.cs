@@ -14,7 +14,6 @@ namespace eCommerce.Infraestructure.Repository
         public async Task<ApplicationUser?> AddUser(ApplicationUser user)
         {
             user.UserId = Guid.NewGuid();
-            user.CreatedAt = DateTime.Now;
             
             return user;
         }

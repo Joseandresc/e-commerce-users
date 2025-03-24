@@ -30,12 +30,7 @@ namespace eCommerce.Core.Mappers
                 .ForMember(dest => dest.Success, opt => opt.Ignore());
 
 
-            //Mappings from RegisterRequest DTO to ApplicationUser entity
-            CreateMap<RegisterRequest, ApplicationUser>()
-                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
-                .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password)) // In a real application, passwords should be hashed.
-                .ForMember(dest => dest.PersonName, opt => opt.MapFrom(src => src.PersonName))
-                .ForMember(dest => dest.Gender, opt=> opt.MapFrom(src=>src.Gender))
+          
 
 
         }

@@ -16,8 +16,7 @@ namespace eCommerce.Core.Entities
         public string? Password { get; set; }
         public string? PersonName { get; set; }
         public string? Gender { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+      
         // Navigation properties
         //public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
     }
