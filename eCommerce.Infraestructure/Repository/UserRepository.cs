@@ -1,6 +1,7 @@
 ﻿using eCommerce.Core.DTO;
 using eCommerce.Core.Entities;
 using eCommerce.Core.RepositoryContract;
+using eCommerce.Infraestructure.DbContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +12,16 @@ namespace eCommerce.Infraestructure.Repository
 {
     internal class UserRepository : IUsersRepository
     {
+        private readonly DapperDbContext? _dbContext;
+        public UserRepository(DapperDbContext? dbContext)
+        {
+            _dbContext = dbContext;
+        }
         public async Task<ApplicationUser?> AddUser(ApplicationUser user)
         {
             user.UserId = Guid.NewGuid();
-            
+
+
             return user;
         }
 

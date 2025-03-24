@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using eCommerce.Core.RepositoryContract;
 using eCommerce.Infraestructure.Repository;
+using eCommerce.Infraestructure.DbContext;
 
 namespace eCommerce.Infraestructure
 {
@@ -17,6 +18,7 @@ namespace eCommerce.Infraestructure
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
             services.AddSingleton<IUsersRepository, UserRepository>();
+            services.AddTransient<DapperDbContext>();
             return services;
         }
        
