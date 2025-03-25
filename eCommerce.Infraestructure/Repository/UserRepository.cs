@@ -1,4 +1,5 @@
-﻿using eCommerce.Core.DTO;
+﻿using Dapper;
+using eCommerce.Core.DTO;
 using eCommerce.Core.Entities;
 using eCommerce.Core.RepositoryContract;
 using eCommerce.Infraestructure.DbContext;
@@ -20,21 +21,24 @@ namespace eCommerce.Infraestructure.Repository
         public async Task<ApplicationUser?> AddUser(ApplicationUser user)
         {
             user.UserId = Guid.NewGuid();
-
-
-            return user;
+            //SQL query to insert user into the database
+            //string query = "INSERT INTO public.\"Users\" (\"UserId\", \"Email\", \"Password\", \"PersonName\") VALUES (@UserId, @Email, @Password, @PersonName)";
+            string query = @"INSERT INTO public.""Users"" (""UserId"", ""Email"", ""Password"", ""PersonName"")
+                           VALUES (@UserId, @Email, @Password, @PersonName)";
+            int? rowCountAffected = await _dbContext.DbConnection.ExecuteAsync(query, user);
+            if (rowCountAffected > 0)
+            {
+                return user;
+            }
+            else
+                return null;
         }
 
         public async Task<ApplicationUser?> GetUserByEmailPass(string? email, string? password)
         {
-            return new ApplicationUser()
-            {
-                Email = email,
-                Password = password,
-                UserId = Guid.NewGuid(),
-                PersonName = "Person name",
-                Gender = GenderOptions.Male.ToString(),
-            };
+            string query = @"SELECT * FROM public.""Users"" WHERE ""Email"" = @Email AND ""Password"" = @Password";
+            var user = await _dbContext.DbConnection.QueryFirstOrDefaultAsync<ApplicationUser>(query, new { Email = email, Password = password });
+            return user;
         }
     }
 }
